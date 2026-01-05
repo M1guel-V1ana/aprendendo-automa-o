@@ -1,2 +1,2 @@
-# aprendendo-automa-o
+# coisas pra implementar futuramente
 apendrendo automação
