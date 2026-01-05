@@ -1,0 +1,828 @@
+{
+  "name": "primeiro projeto",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Formualrio de processo seletivo Avante Tech! ",
+        "formDescription": "Realize o preenchimento do formulário abaixo, e aguarde o resultado. Boa Sorte!",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome Completo: ",
+              "placeholder": "Digite seu nome completo "
+            },
+            {
+              "fieldLabel": "Digite seu email ",
+              "fieldType": "email",
+              "placeholder": "Digite seu email"
+            },
+            {
+              "fieldLabel": "Escolha seu setor de interesse:",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Setor Comercial "
+                  },
+                  {
+                    "option": "Setor de Software"
+                  },
+                  {
+                    "option": "Setor de Gestão de Pessoas - RH"
+                  },
+                  {
+                    "option": "Setor de Marketing"
+                  },
+                  {
+                    "option": "Setor de desenvolvimento de Firmware"
+                  },
+                  {
+                    "option": "Setor Administrativo Financeiro "
+                  },
+                  {
+                    "option": "Setor de Projetos"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Pretenção salarial",
+              "fieldType": "number",
+              "placeholder": "Digite sua pretenção salarial"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -6032,
+        -32
+      ],
+      "id": "ef7a80c9-ada6-49e7-8425-0f214e506f8f",
+      "name": "Quando receber o envio de uma candidatura ",
+      "webhookId": "a41ab352-1124-4b97-96ac-bf46d3515e71"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f4b8fb3d-8489-4de8-817e-4a957782b29d",
+              "leftValue": "={{ $json['Pretenção salarial'] }}",
+              "rightValue": 5000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -5760,
+        -48
+      ],
+      "id": "1e9df20d-7229-4c4e-b39d-18ba6e8b00e4",
+      "name": "se o salario for maior que 5.000"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }}",
+        "subject": "Obrigado por participar da nossa entrevista de emprego ",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }} ,\n\nAgradecemos sinceramente o seu interesse e a participação em nosso processo seletivo.\n\nApós uma análise cuidadosa do seu perfil, entendemos que, neste momento, não será possível dar continuidade à sua candidatura, pois a pretensão salarial informada está acima do orçamento previsto para a posição.\n\nRessaltamos que essa decisão não reflete a qualidade do seu perfil profissional, que foi muito bem avaliado. Caso surjam oportunidades futuras mais alinhadas às suas expectativas, ficaremos felizes em retomar o contato.\n\nAgradecemos novamente o tempo dedicado e desejamos sucesso em sua trajetória profissional.\n\nAtenciosamente,",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -5088,
+        -512
+      ],
+      "id": "e74cb24b-4383-469a-b6da-5dff23484f77",
+      "name": "msg de agradecimento (recusado devido a pretensão salarial)",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Setor Comercial",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b743f8dc-c813-4ac3-9952-4fa4fe5d8b30"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Com"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a2092b9a-6b51-4bd2-ba28-ec9b71c1820a",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Setor de Gestão de Pessoas - RH",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "RH "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b0eafaa1-6f38-4ee1-93dd-eb0d2805f42a",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Setor de Marketing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Mkt "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "70b386ae-3b06-4893-a965-67c4e3a190db",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Seto de Software",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Devsft"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "75a398e8-cc3a-4afc-9ea0-019778eb5a4e",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": " Setor de desenvolvimento de Firmware",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Devfir"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4ec1d8f1-5c51-4aad-b5c4-117e1d5178ba",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Setor Administrativo Financeiro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Adm "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "334f9e3a-0912-42ce-a842-5e725dbfad1f",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Setor de projetos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pj"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -4944,
+        304
+      ],
+      "id": "6a7abc92-e06a-4e35-9e3e-c1a5fb7595f0",
+      "name": "verifica cargo "
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Digite seu email'] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4320,
+        -256
+      ],
+      "id": "adf621d7-840e-4ecb-9e0b-441f301a5c9f",
+      "name": "msg de bem-vindo ao setro comercial",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Quando receber o envio de uma candidatura ').item.json['Digite seu email '] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4320,
+        -80
+      ],
+      "id": "10cf7616-3efa-45af-95eb-91cd041c9112",
+      "name": "msg de bem-vindo ao setor de RH",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Quando receber o envio de uma candidatura ').item.json['Digite seu email '] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4320,
+        128
+      ],
+      "id": "f41b4146-af9e-4c5b-9af6-de6e8df01614",
+      "name": "msg de bem-vindo ao setor de Marketing ",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Digite seu email'] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4304,
+        336
+      ],
+      "id": "df204618-7c77-4a74-9a0a-ded8b00acb16",
+      "name": "msg de bem-vindo ao setor de devS",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Digite seu email'] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4304,
+        512
+      ],
+      "id": "99a8ed1e-26ae-45fd-9435-8729300946e0",
+      "name": "msg de bem-vindo ao setor de devF",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Digite seu email'] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4304,
+        688
+      ],
+      "id": "d75a5f6c-37b3-4c09-bb7e-4dfa8e033b3e",
+      "name": "msg de bem vindo ao setor Administrativo ",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Digite seu email'] }}",
+        "subject": "Seja bem-vindo(a) à nossa equipe!",
+        "emailType": "text",
+        "message": "=Olá,{{ $('Quando receber o envio de uma candidatura ').item.json['Nome Completo: '] }},\n\nÉ com grande satisfação que damos as boas-vindas a você à nossa empresa!\n\nA partir de agora, você passa a integrar o {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }} , onde temos certeza de que suas habilidades, conhecimentos e dedicação contribuirão de forma significativa para o nosso time e para o alcance dos nossos objetivos.\n\nDesejamos que esta nova etapa seja marcada por muito aprendizado, crescimento profissional e conquistas. Conte com o apoio da equipe e da liderança para o que for necessário nesse início — estamos felizes em tê-lo(a) conosco.\n\nSeja muito bem-vindo(a) e sucesso nessa nova jornada!\n\nAtenciosamente,\nEquipe de Gestão de Pessoas / Recursos Humanos\nAvante Tech jr! 🚀💙",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4288,
+        880
+      ],
+      "id": "80741fc7-5ad0-49ce-a0c0-d9a9ef3fa66b",
+      "name": "msg de bem-vindo ao setor de Projetos",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1EMn_J73DU8ZAGa3DgKRwK6jBPUjCO-lC5IH1EjmfqOM",
+          "mode": "list",
+          "cachedResultName": "Contratos 2025",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EMn_J73DU8ZAGa3DgKRwK6jBPUjCO-lC5IH1EjmfqOM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EMn_J73DU8ZAGa3DgKRwK6jBPUjCO-lC5IH1EjmfqOM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome Completo": "={{ $json['Nome Completo: '] }}",
+            "Email": "={{ $json['Digite seu email '] }}",
+            "Setor": "={{ $json['Escolha seu setor de interesse:'] }}",
+            "Pretensão S": "={{ $json['Pretenção salarial'] }}",
+            "Data": "={{ $now.format('dd/MM/yyyy') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome Completo",
+              "displayName": "Nome Completo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Setor",
+              "displayName": "Setor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pretensão S",
+              "displayName": "Pretensão S",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data",
+              "displayName": "Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -5392,
+        160
+      ],
+      "id": "c52c5109-2b75-4704-bca1-2d73ddafe440",
+      "name": "Planilha de contratação ",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kbK70Ur1gf3Bc0tF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -3280,
+        336
+      ],
+      "id": "4b16fa48-c26a-4787-ac3f-c845755c383f",
+      "name": "União de fluxos",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sendTo": "=p9006565@gmail.com",
+        "subject": "Novas candidaturas",
+        "emailType": "text",
+        "message": "=Olá, \n\num novo funcionario foi adicionado a planilha: {{ $('Quando receber o envio de uma candidatura ').item.json['Escolha seu setor de interesse:'] }}\n\npor favor analine o cadidato e dê o feedback, para seguir com a contratação.",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -2928,
+        320
+      ],
+      "id": "679e7417-ff83-41cf-93d2-93224de6c64a",
+      "name": "msg para gerencia da empresa ",
+      "webhookId": "f68826d6-2fa1-4467-a4ed-1c132efc7e99",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y9Yc0lNryu6t1Y6X",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Quando receber o envio de uma candidatura ": {
+      "main": [
+        [
+          {
+            "node": "se o salario for maior que 5.000",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "se o salario for maior que 5.000": {
+      "main": [
+        [
+          {
+            "node": "msg de agradecimento (recusado devido a pretensão salarial)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Planilha de contratação ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica cargo ": {
+      "main": [
+        [
+          {
+            "node": "msg de bem-vindo ao setro comercial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem-vindo ao setor de RH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem-vindo ao setor de Marketing ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem-vindo ao setor de devS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem-vindo ao setor de devF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem vindo ao setor Administrativo ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg de bem-vindo ao setor de Projetos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planilha de contratação ": {
+      "main": [
+        [
+          {
+            "node": "verifica cargo ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setro comercial": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setor de RH": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setor de Marketing ": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setor de devS": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setor de devF": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem vindo ao setor Administrativo ": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg de bem-vindo ao setor de Projetos": {
+      "main": [
+        [
+          {
+            "node": "União de fluxos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "União de fluxos": {
+      "main": [
+        [
+          {
+            "node": "msg para gerencia da empresa ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9405506a-3ef9-46be-84aa-b619d0bb4904",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d64f667926779bb2d6ba810dca0b958c2a416218d9d8bb4ef72e3fa6b2932783"
+  },
+  "id": "tjIkY6MLwyNFx62u",
+  "tags": [
+    {
+      "updatedAt": "2025-12-15T20:25:22.380Z",
+      "createdAt": "2025-12-15T20:25:22.380Z",
+      "id": "7qXEeWh59sPKsmbU",
+      "name": "Fluxo de entrevista empr"
+    }
+  ]
+}
