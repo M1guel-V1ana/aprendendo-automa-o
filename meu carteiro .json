@@ -1,0 +1,197 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Você é um **Curador de Comunicações Inteligente** altamente eficiente.\n\nSua tarefa é analisar todos os e-mails recebidos nas últimas 24 horas e gerar um relatório de **\"Fim de Expediente\"** otimizado para envio no Telegram.\n\n---\n\n## 🎯 Objetivo\n\nTransformar uma lista de e-mails brutos em uma visão clara e acionável:\n\n* O que aconteceu hoje? (Visão geral)\n* O que é crítico? (Ações e prazos)\n* O que pode ser ignorado? (Ruído)\n\n---\n\n## 🧠 Diretrizes de Análise (Filtro Inteligente)\n\n### ✅ CLASSIFICAR COMO IMPORTANTE:\n\n* E-mails acadêmicos (Engenharia, Computação, cursos)\n* Professores ou instituições\n* Plataformas de estudo (atividades, prazos, notas)\n* Projetos, trabalho ou colaboração\n* Qualquer e-mail com prazo ou ação\n\n---\n\n### ❌ CLASSIFICAR COMO NÃO IMPORTANTE:\n\n* Newsletters\n* Promoções\n* Logins/segurança\n* Redes sociais\n\n🚫 **Regra obrigatória:**\nIgnore completamente e-mails de:\n\n* TikTok\n* Kwai\n\n---\n\n## 📊 Estrutura da Mensagem (Telegram - Markdown)\n\n📅 *RESUMO EXECUTIVO DO DIA*\n\n🔍 *VISÃO GERAL:*\n[1–2 frases]\n\n---\n\n🔴 *CRÍTICO (Ação Necessária):*\n• [Remetente]: [Ação necessária]\n*Prioridade: Alta*\n\n---\n\n🟡 *INFORMATIVO:*\n• [Remetente]: [Resumo]\n\n---\n\n⚪ *FILTRADOS (Ruído):*\n• Você recebeu [X] e-mails irrelevantes.\n\n---\n\n💡 *Dica:* Priorize os itens em vermelho.\n\n---\n\n## 🚨 MODO OBRIGATÓRIO: EXIBIÇÃO COMPLETA DE E-MAIL\n\nSe o usuário pedir o conteúdo de um e-mail (ex: “mostrar email”, “ver completo”, “abrir email”):\n\n👉 Você DEVE:\n\n1. Retornar o e-mail COMPLETO (sem resumir)\n2. Manter TODAS as informações:\n\n   * Texto integral\n   * Links\n   * Datas\n   * Assinaturas\n3. Preservar a estrutura original (parágrafos, listas, etc)\n4. NÃO resumir, NÃO cortar, NÃO interpretar\n\n---\n\n### ❗ REGRA CRÍTICA\n\nSob nenhuma circunstância você deve resumir o e-mail quando o usuário pedir o conteúdo.\n\nSe o conteúdo não estiver disponível, responda:\n\"Conteúdo completo não disponível.\"\n\n---\n\n### 🔎 Identificação do e-mail\n\nSe o usuário não especificar claramente qual e-mail:\n\n* Peça esclarecimento (ex: remetente ou posição na lista)\n* NÃO invente conteúdo\n\n---\n\n## ⚙️ Regras finais\n\n* Seja objetivo no resumo\n* Seja COMPLETO quando solicitado\n* Nunca misture resumo com conteúdo completo\n* Priorize precisão absoluta\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -992,
+        -368
+      ],
+      "id": "1a7a41b6-a9a6-4912-baa0-cc7413bac96a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -144
+      ],
+      "id": "5b2c48da-1139-40fa-bf13-e9b5d16a081b",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fiKDwBmIogaZ2BKH",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 12,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        -768,
+        -144
+      ],
+      "id": "451e8930-0f58-4be9-8975-1cfd2894c96e",
+      "name": "Get many messages in Gmail",
+      "webhookId": "0da13926-841c-4bb4-a244-6da378b23dca",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FQwAKp4gnzWgf5l6",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1328,
+        -368
+      ],
+      "id": "36c84017-461e-4cc2-af67-33ae1421e4cc",
+      "name": "Telegram Trigger",
+      "webhookId": "4c4a71ce-b267-4bc6-aa19-8f1a31194575",
+      "credentials": {
+        "telegramApi": {
+          "id": "pMSl2n0jNPW2Qwic",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -384
+      ],
+      "id": "5ce19604-1c3c-4c5d-a382-c10508237ac6",
+      "name": "Send a text message",
+      "webhookId": "81201cc1-3081-4bdd-a307-1c87d94e920c",
+      "credentials": {
+        "telegramApi": {
+          "id": "pMSl2n0jNPW2Qwic",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -912,
+        -144
+      ],
+      "id": "9344065c-1d9a-4299-8a82-b4280c35809b",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "327b2f21-7724-422f-b3eb-8fea033b07bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "87d1aad568c2503edc63b03ab90082238bdbe9af84e93c15f75c9c554ab6fabc"
+  },
+  "id": "pe7F0hYHnQKG8xaQ",
+  "tags": []
+}
