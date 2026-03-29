@@ -1,0 +1,270 @@
+{
+  "name": "formulário de cadastro de produtos(era pra ser um bd, mas eu emprovisei)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Cadastro de clientes ",
+        "formDescription": "Cadastro para venda de livros ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome completo",
+              "placeholder": "Digite seu nome completo ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Digite seu email ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Produtos",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Livro A"
+                  },
+                  {
+                    "option": "Livro B"
+                  },
+                  {
+                    "option": "Livro C "
+                  },
+                  {
+                    "option": "Livro D"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Preço ",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -3280,
+        -576
+      ],
+      "id": "b69d81bb-9e3c-415e-8256-28f9d1c39088",
+      "name": "On form submission",
+      "webhookId": "2c9c473f-d4c7-4b9b-9cf9-6561b00888b5"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8",
+          "mode": "list",
+          "cachedResultName": " Emails teste  para automção de forms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome completo",
+              "displayName": "Nome completo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Produtos",
+              "displayName": "Produtos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preço ",
+              "displayName": "Preço ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "submittedAt",
+              "displayName": "submittedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "formMode",
+              "displayName": "formMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2832,
+        -656
+      ],
+      "id": "e9f7cfb1-b013-44d6-ba63-c577a11e8224",
+      "name": "Banco de Dados ex.",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZwdEylrWjG6QGjd7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Banco de Dados ex.').item.json.Email }}",
+        "subject": "Livro Em Destaque ",
+        "emailType": "text",
+        "message": "=olá Mestre, \n\nAcabamos de receber um livro ({{ $('Banco de Dados ex.').item.json.Produtos }}) no valor de (R${{ Number($('Banco de Dados ex.').item.json['Preço ']).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}) enviado pelo(a) ({{ $('Banco de Dados ex.').item.json['Nome completo'] }})",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1984,
+        -768
+      ],
+      "id": "1f806fe2-5c85-41e1-afde-e6cc17505268",
+      "name": "Send a message",
+      "webhookId": "be79d4db-8399-4806-b091-e8fe68ff19bb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "guv1JhM8i85aT5lo",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0a358c90-d66e-4696-9942-c102f05450fe",
+              "leftValue": "={{ $json['Preço '] }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2432,
+        -560
+      ],
+      "id": "5451f67d-3b15-477d-bd49-e7849a143478",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Banco de Dados ex.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Banco de Dados ex.": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "410f956d-c0e9-4212-8e13-51265cd4c855",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31aa6f81aca4017e6f1b75a082b1e8bf6016bc58960ea98944f58e2eab113d2b"
+  },
+  "id": "aggMlmdXc5ZKpTYV",
+  "tags": []
+}
