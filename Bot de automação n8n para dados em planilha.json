@@ -1,0 +1,204 @@
+{
+  "name": "Bot de automação n8n para dados em planilha",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente interativo especializado em leitura e análise de dados do Google Sheets.\n\nSeu objetivo é conversar com o usuário e entender o que ele deseja fazer com os dados da planilha.\n\nComportamento principal:\n- Sempre comece perguntando o que o usuário deseja:\n  Exemplos:\n  - \"Você quer ver todos os dados ou filtrar alguma informação?\"\n  - \"Deseja buscar por nome, email ou outro campo?\"\n\n- Interprete a intenção do usuário e execute:\n  ✔ Listar todos os registros\n  ✔ Filtrar por nome, email ou qualquer campo\n  ✔ Mostrar apenas registros específicos (ex: aprovados)\n  ✔ Exibir dados completos ou resumidos\n\nRegras de formatação:\n- O campo \"Preço\" deve sempre:\n  - Ser tratado como número\n  - Ter duas casas decimais\n  - Estar no padrão brasileiro (ex: R$ 1.234,56)\n\nFormato de saída:\n- Quando mostrar dados, use:\n\nNome: {{nome}}\nEmail: {{email}}\nPreço: R$ {{preco_formatado}}\n\n- Separe múltiplos registros com linha em branco\n\nTratamento de dados:\n- Se algum campo estiver vazio → \"Não informado\"\n- Nunca exiba dados brutos sem formatação\n\nInteratividade:\n- Se o pedido do usuário for vago, faça perguntas antes de responder\n- Sugira ações, como:\n  - \"Quer que eu filtre apenas os aprovados?\"\n  - \"Deseja ordenar os resultados?\"\n\nComandos especiais (entenda naturalmente, sem exigir formato fixo):\n- \"mostrar tudo\"\n- \"filtrar por [campo]\"\n- \"buscar [valor]\"\n- \"ordenar por preço\"\n- \"ver completo\"\n\nIdioma:\n- Sempre responda em português\n- Seja claro, direto e amigável",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -160,
+        -64
+      ],
+      "id": "a7650f1c-4d82-4ea7-b6ae-3da5f29c7a9b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8",
+          "mode": "list",
+          "cachedResultName": " Emails teste  para automção de forms",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdKwXAkijoUBF33QXN3duOYU4w2yfl8t3stA81lZMH8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        192
+      ],
+      "id": "05cf86bd-4062-4e96-a6b6-add5adeba801",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZwdEylrWjG6QGjd7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        -48
+      ],
+      "id": "6df5e292-1b75-46d2-af7b-dcab8cc204ae",
+      "name": "Telegram Trigger",
+      "webhookId": "1d523bc8-ee57-4716-a539-1b04b954a0f7",
+      "credentials": {
+        "telegramApi": {
+          "id": "i9ImsLZhWlBWYfFc",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -64
+      ],
+      "id": "ba73482f-1cbe-4de0-9b96-209e2e3f64b1",
+      "name": "Send a text message",
+      "webhookId": "930dacd8-1a73-40af-b6cc-ed020cef51ed",
+      "credentials": {
+        "telegramApi": {
+          "id": "i9ImsLZhWlBWYfFc",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.from.id }}",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        160
+      ],
+      "id": "a161deab-2d7d-41e8-a942-3a4410d57648",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        144
+      ],
+      "id": "bc5c388a-38dc-42a7-b826-d88d682a2b98",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EnBtaoVuC6xGqq7T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c2cc50ce-7c3a-4cb7-b874-444cf09fe696",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31aa6f81aca4017e6f1b75a082b1e8bf6016bc58960ea98944f58e2eab113d2b"
+  },
+  "id": "c6Rjx1k5YO3yKDyO",
+  "tags": []
+}
